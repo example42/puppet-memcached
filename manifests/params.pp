@@ -13,7 +13,7 @@ class memcached::params {
   }
 
   $config_file_path = $::osfamily ? {
-    default => '/etc/memcached/memcached.conf',
+    default => '/etc/memcached.conf',
   }
 
   $config_file_mode = $::osfamily ? {

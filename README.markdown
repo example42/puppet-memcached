@@ -4,7 +4,7 @@
 
 1. [Overview](#overview)
 2. [Module Description](#module-description)
-3. [Setup]](#setup)
+3. [Setup](#setup)
     * [What module memcached affects](#what-modulename-memcached-affects)
     * [Setup requirements](#setup-requirements)
     * [Beginning with module memcached](#beginning-with-module-memcached)
