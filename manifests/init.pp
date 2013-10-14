@@ -6,47 +6,47 @@
 #
 # == Parameters
 #
-# Refer to https://github.com/stdmod for the official
-# documentation for standard parameters usage.
+# Refer to https://github.com/stdmod for official documentation
+# on the stdmod parameters used
 #
 class memcached (
 
-  $ensure                = 'present',
-  $version               = undef,
+  $ensure                    = 'present',
+  $version                   = undef,
 
-  $package_name          = $memcached::params::package_name,
+  $package_name              = $memcached::params::package_name,
 
-  $service_name          = $memcached::params::service_name,
-  $service_ensure        = 'running',
-  $service_enable        = true,
+  $service_name              = $memcached::params::service_name,
+  $service_ensure            = 'running',
+  $service_enable            = true,
 
-  $config_file_path             = $memcached::params::config_file_path,
-  $config_file_replace          = $memcached::params::config_file_replace,
-  $config_file_require          = 'Package[memcached]',
-  $config_file_notify           = 'Service[memcached]',
-  $config_file_source           = undef,
-  $config_file_template         = undef,
-  $config_file_content          = undef,
-  $config_file_options_hash     = undef,
+  $config_file_path          = $memcached::params::config_file_path,
+  $config_file_replace       = $memcached::params::config_file_replace,
+  $config_file_require       = 'Package[memcached]',
+  $config_file_notify        = 'Service[memcached]',
+  $config_file_source        = undef,
+  $config_file_template      = undef,
+  $config_file_content       = undef,
+  $config_file_options_hash  = undef,
 
-  $config_dir_path              = $memcached::params::config_dir_path,
-  $config_dir_source            = undef,
-  $config_dir_purge             = false,
-  $config_dir_recurse           = true,
+  $config_dir_path           = $memcached::params::config_dir_path,
+  $config_dir_source         = undef,
+  $config_dir_purge          = false,
+  $config_dir_recurse        = true,
 
-  $dependency_class      = undef,
-  $my_class              = undef,
+  $dependency_class          = undef,
+  $my_class                  = undef,
 
-  $monitor_class         = undef,
-  $monitor_options_hash  = { } ,
+  $monitor_class             = undef,
+  $monitor_options_hash      = { } ,
 
-  $firewall_class        = undef,
-  $firewall_options_hash = { } ,
+  $firewall_class            = undef,
+  $firewall_options_hash     = { } ,
 
-  $scope_hash_filter     = '(uptime.*|timestamp)',
+  $scope_hash_filter         = '(uptime.*|timestamp)',
 
-  $port                  = undef,
-  $protocol              = undef,
+  $tcp_port                  = undef,
+  $udp_port                  = undef,
 
   ) inherits memcached::params {
 
@@ -140,7 +140,7 @@ class memcached (
       recurse => $memcached::config_dir_recurse,
       purge   => $memcached::config_dir_purge,
       force   => $memcached::config_dir_purge,
-      notify  => $memcached::manage_config_file_notify,
+      notify  => $memcached::config_file_notify,
       require => $memcached::config_file_require,
     }
   }

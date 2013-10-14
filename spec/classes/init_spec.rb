@@ -1,5 +1,4 @@
 require 'spec_helper'
-# require "#{File.join(File.dirname(__config_file__),'..','spec_helper.rb')}"
 
 describe 'memcached' do
 
@@ -51,7 +50,7 @@ describe 'memcached' do
 
       describe "#{osfamily} Configuration via custom template" do
         let(:params) { {
-          :config_file_template     => 'memcached/spec.conf.erb',
+          :config_file_template     => 'memcached/spec.conf',
           :config_file_options_hash => { 'opt_a' => 'value_a' },
         } }
         let(:facts) {{
@@ -122,3 +121,4 @@ describe 'memcached' do
   end
 
 end
+
