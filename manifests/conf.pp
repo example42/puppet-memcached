@@ -16,7 +16,7 @@
 #   String. Optional. Default: undef. Alternative to: template, source.
 #   Sets directly the value of the file's content parameter
 #   When defined, config file has: content => $content,
-#   Example: content => "# File Managed by Puppet \n",
+#   Example: content => "# File manage by Puppet \n",
 #
 # [*source*]
 #   String. Optional. Default: undef. Alternative to: template, content.
@@ -69,12 +69,12 @@ define memcached::conf (
 
   include memcached
 
-  $managed_path = $path ? {
+  $manage_path = $path ? {
     undef   => "${memcached::config_dir_path}/${name}",
     default => $path,
   }
 
-  $managed_content = $content ? {
+  $manage_content = $content ? {
     undef   => $template ? {
       undef => undef,
       default => template($template),
@@ -82,32 +82,32 @@ define memcached::conf (
     default => $content,
   }
 
-  $managed_mode = $mode ? {
+  $manage_mode = $mode ? {
     undef   => $memcached::config_file_mode,
     default => $mode,
   }
 
-  $managed_owner = $owner ? {
+  $manage_owner = $owner ? {
     undef   => $memcached::config_file_owner,
     default => $owner,
   }
 
-  $managed_group = $group ? {
+  $manage_group = $group ? {
     undef   => $memcached::config_file_group,
     default => $group,
   }
 
-  $managed_require = $require ? {
+  $manage_require = $require ? {
     undef   => $memcached::config_file_require,
     default => $require,
   }
 
-  $managed_notify = $notify ? {
-    undef   => $memcached::config_file_notify,
+  $manage_notify = $notify ? {
+    undef   => $memcached::manage_config_file_notify,
     default => $notify,
   }
 
-  $managed_replace = $replace ? {
+  $manage_replace = $replace ? {
     undef   => $memcached::config_file_replace,
     default => $replace,
   }
@@ -115,14 +115,14 @@ define memcached::conf (
   file { "memcached_conf_${name}":
     ensure  => $ensure,
     source  => $source,
-    content => $managed_content,
-    path    => $managed_path,
-    mode    => $managed_mode,
-    owner   => $managed_owner,
-    group   => $managed_group,
-    require => $managed_require,
-    notify  => $managed_notify,
-    replace => $managed_replace,
+    content => $manage_content,
+    path    => $manage_path,
+    mode    => $manage_mode,
+    owner   => $manage_owner,
+    group   => $manage_group,
+    require => $manage_require,
+    notify  => $manage_notify,
+    replace => $manage_replace,
   }
 
 }
