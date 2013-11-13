@@ -11,10 +11,8 @@
 #
 class memcached (
 
-  $ensure                    = 'present',
-  $version                   = undef,
-
   $package_name              = $memcached::params::package_name,
+  $package_ensure            = 'present',
 
   $service_name              = $memcached::params::service_name,
   $service_ensure            = 'running',
@@ -51,9 +49,8 @@ class memcached (
   ) inherits memcached::params {
 
 
-  # Input parameters validation
+  # Class variables validation and management
 
-  validate_re($ensure, ['present','absent'], 'Valid values: present, absent.')
   validate_bool($service_enable)
   validate_bool($config_dir_recurse)
   validate_bool($config_dir_purge)
@@ -61,36 +58,19 @@ class memcached (
   if $monitor_options_hash { validate_hash($monitor_options_hash) }
   if $firewall_options_hash { validate_hash($firewall_options_hash) }
 
-
-  # Calculation of variables used in the module
-
   $config_file_owner          = $memcached::params::config_file_owner
   $config_file_group          = $memcached::params::config_file_group
   $config_file_mode           = $memcached::params::config_file_mode
 
-  if $config_file_content {
-    $manage_config_file_content = $config_file_content
-  } else {
-    if $config_file_template {
-      $manage_config_file_content = template($config_file_template)
-    } else {
-      $manage_config_file_content = undef
-    }
+  $manage_config_file_content = default_content($config_file_content, $config_file_template)
+
+  $manage_config_file_notify  = $config_file_notify ? {
+    'class_default' => 'Service[memcached]',
+    ''              => undef,
+    default         => $config_file_notify,
   }
 
-  if $config_file_notify {
-    $manage_config_file_notify = $config_file_notify
-  } else {
-    $manage_config_file_notify = undef
-  }
-
-  if $version {
-    $manage_package_ensure = $version
-  } else {
-    $manage_package_ensure = $ensure
-  }
-
-  if $ensure == 'absent' {
+  if $package_ensure == 'absent' {
     $manage_service_enable = undef
     $manage_service_ensure = stopped
     $config_dir_ensure = absent
@@ -103,17 +83,19 @@ class memcached (
   }
 
 
-  # Resources manage
+  # Resources managed
 
   if $memcached::package_name {
-    package { $memcached::package_name:
-      ensure   => $memcached::manage_package_ensure,
+    package { 'memcached':
+      ensure   => $memcached::package_ensure,
+      name     => $memcached::package_name,
     }
   }
 
   if $memcached::service_name {
-    service { $memcached::service_name:
+    service { 'memcached':
       ensure     => $memcached::manage_service_ensure,
+      name       => $memcached::service_name,
       enable     => $memcached::manage_service_enable,
     }
   }
@@ -140,7 +122,7 @@ class memcached (
       recurse => $memcached::config_dir_recurse,
       purge   => $memcached::config_dir_purge,
       force   => $memcached::config_dir_purge,
-      notify  => $memcached::config_file_notify,
+      notify  => $memcached::manage_config_file_notify,
       require => $memcached::config_file_require,
     }
   }

@@ -57,7 +57,7 @@ define memcached::conf (
   $mode         = undef,
   $owner        = undef,
   $group        = undef,
-  $notify       = undef,
+  $notify       = 'class_default',
   $require      = undef,
   $replace      = undef,
 
@@ -69,47 +69,16 @@ define memcached::conf (
 
   include memcached
 
-  $manage_path = $path ? {
-    undef   => "${memcached::config_dir_path}/${name}",
-    default => $path,
-  }
-
-  $manage_content = $content ? {
-    undef   => $template ? {
-      undef => undef,
-      default => template($template),
-    },
-    default => $content,
-  }
-
-  $manage_mode = $mode ? {
-    undef   => $memcached::config_file_mode,
-    default => $mode,
-  }
-
-  $manage_owner = $owner ? {
-    undef   => $memcached::config_file_owner,
-    default => $owner,
-  }
-
-  $manage_group = $group ? {
-    undef   => $memcached::config_file_group,
-    default => $group,
-  }
-
-  $manage_require = $require ? {
-    undef   => $memcached::config_file_require,
-    default => $require,
-  }
-
-  $manage_notify = $notify ? {
-    undef   => $memcached::manage_config_file_notify,
-    default => $notify,
-  }
-
-  $manage_replace = $replace ? {
-    undef   => $memcached::config_file_replace,
-    default => $replace,
+  $manage_path    = pickx($path, "${memcached::config_dir_path}/${name}")
+  $manage_content = choose_default($content, $template)
+  $manage_mode    = pickx($mode, $memcached::config_file_mode)
+  $manage_owner   = pickx($owner, $memcached::config_file_owner)
+  $manage_group   = pickx($group, $memcached::config_file_group)
+  $manage_require = pickx($require, $memcached::config_file_require)
+  $manage_replace = pickx($replace, $memcached::config_file_replace)
+  $manage_notify  = $notify ? {
+    'class_default' => $memcached::manage_config_file_notify,
+    default         => $notify,
   }
 
   file { "memcached_conf_${name}":

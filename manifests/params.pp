@@ -13,7 +13,8 @@ class memcached::params {
   }
 
   $config_file_path = $::osfamily ? {
-    default => '/etc/memcached.conf',
+    'RedHat' => '/etc/sysconfig/memcached',
+    default  => '/etc/memcached.conf',
   }
 
   $config_file_mode = $::osfamily ? {
@@ -28,14 +29,12 @@ class memcached::params {
     default => 'root',
   }
 
-  $config_dir_path = $::osfamily ? {
-    default => '/etc/memcached',
-  }
+  $config_dir_path = undef
 
   case $::osfamily {
     'Debian','RedHat','Amazon': { }
     default: {
-      fail("${::operatingsystem} not supported")
+      fail("${::operatingsystem} not supported. Review params.pp for extending support.")
     }
   }
 }
