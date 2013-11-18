@@ -19,13 +19,12 @@ class memcached (
   $service_enable            = true,
 
   $config_file_path          = $memcached::params::config_file_path,
-  $config_file_replace       = $memcached::params::config_file_replace,
   $config_file_require       = 'Package[memcached]',
   $config_file_notify        = 'Service[memcached]',
   $config_file_source        = undef,
   $config_file_template      = undef,
   $config_file_content       = undef,
-  $config_file_options_hash  = undef,
+  $config_file_options_hash  = { } ,
 
   $config_dir_path           = $memcached::params::config_dir_path,
   $config_dir_source         = undef,
@@ -83,20 +82,19 @@ class memcached (
   }
 
 
+  # Dependency class
+
+  if $memcached::dependency_class {
+    include $memcached::dependency_class
+  }
+
+
   # Resources managed
 
   if $memcached::package_name {
     package { 'memcached':
       ensure   => $memcached::package_ensure,
       name     => $memcached::package_name,
-    }
-  }
-
-  if $memcached::service_name {
-    service { 'memcached':
-      ensure     => $memcached::manage_service_ensure,
-      name       => $memcached::service_name,
-      enable     => $memcached::manage_service_enable,
     }
   }
 
@@ -127,12 +125,16 @@ class memcached (
     }
   }
 
+  if $memcached::service_name {
+    service { 'memcached':
+      ensure     => $memcached::manage_service_ensure,
+      name       => $memcached::service_name,
+      enable     => $memcached::manage_service_enable,
+    }
+  }
+
 
   # Extra classes
-
-  if $memcached::dependency_class {
-    include $memcached::dependency_class
-  }
 
   if $memcached::my_class {
     include $memcached::my_class

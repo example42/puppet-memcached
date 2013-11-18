@@ -36,11 +36,22 @@
 #   name like the  the name of the title a custom template to use as content of configfile
 #   If defined, configfile file has: content => content("$template")
 #
-# [*mode*] [*owner*] [*group*] [*notify*] [*require*] [*replace*]
+# [*mode*]
+# [*owner*]
+# [*group*]
+# [*config_file_require*]
+# [*replace*]
 #   String. Optional. Default: undef
 #   All these parameters map directly to the created file attributes.
 #   If not defined the module's defaults are used.
 #   If defined, config file file has, for example: mode => $mode
+#
+# [*config_file_notify*]
+#   String. Optional. Default: 'class_default'
+#   Defines the notify argument of the created file.
+#   The default special value implies the same behaviour of the main class
+#   configuration file. Set to undef to remove any notify, or set
+#   the name(s) of the resources to notify
 #
 # [*options_hash*]
 #   Hash. Default undef. Needs: 'template'.
@@ -57,9 +68,9 @@ define memcached::conf (
   $mode         = undef,
   $owner        = undef,
   $group        = undef,
-  $notify       = 'class_default',
-  $require      = undef,
-  $replace      = undef,
+
+  $config_file_notify  = 'class_default',
+  $config_file_require = undef,
 
   $options_hash = undef,
 
@@ -70,15 +81,14 @@ define memcached::conf (
   include memcached
 
   $manage_path    = pickx($path, "${memcached::config_dir_path}/${name}")
-  $manage_content = choose_default($content, $template)
+  $manage_content = default_content($content, $template)
   $manage_mode    = pickx($mode, $memcached::config_file_mode)
   $manage_owner   = pickx($owner, $memcached::config_file_owner)
   $manage_group   = pickx($group, $memcached::config_file_group)
-  $manage_require = pickx($require, $memcached::config_file_require)
-  $manage_replace = pickx($replace, $memcached::config_file_replace)
-  $manage_notify  = $notify ? {
+  $manage_require = pickx($config_file_require, $memcached::config_file_require)
+  $manage_notify  = $config_file_notify ? {
     'class_default' => $memcached::manage_config_file_notify,
-    default         => $notify,
+    default         => $config_file_notify,
   }
 
   file { "memcached_conf_${name}":
@@ -91,7 +101,6 @@ define memcached::conf (
     group   => $manage_group,
     require => $manage_require,
     notify  => $manage_notify,
-    replace => $manage_replace,
   }
 
 }

@@ -1,5 +1,5 @@
 name          'example42-memcached'
-version       '3.0.0.beta.2'
+version       '3.0.0'
 source        'https://github.com/example42/puppet-memcached'
 author        'Alessandro Franceschi'
 license       'Apache License, Version 2.0'
