@@ -143,7 +143,7 @@ class memcached (
   if $memcached::monitor_class {
     class { $memcached::monitor_class:
       options_hash => $memcached::monitor_options_hash,
-      scope_hash   => {}, # TODO: Find a good way to inject class' scope
+      scope_hash   => {}, # TODO: Find a good way to inject class' scope
     }
   }
 
