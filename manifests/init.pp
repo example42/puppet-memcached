@@ -31,6 +31,8 @@ class memcached (
   $config_dir_purge          = false,
   $config_dir_recurse        = true,
 
+  $conf_hash                 = undef,
+
   $dependency_class          = undef,
   $my_class                  = undef,
 
@@ -135,6 +137,10 @@ class memcached (
 
 
   # Extra classes
+
+  if $conf_hash {
+    create_resources('memcached::conf', $conf_hash)
+  }
 
   if $memcached::my_class {
     include $memcached::my_class

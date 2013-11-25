@@ -31,8 +31,8 @@ Refer to http://github.com/stdmod/ for complete documentation on the common para
 * Can manage all the configuration files (by default no file is changed)
 
 ###Setup Requirements
-* PuppetLabs stdlib module
-* StdMod stdmod module
+* PuppetLabs [stdlib module](https://github.com/puppetlabs/puppetlabs-stdlib)
+* StdMod [stdmod module](https://github.com/stdmod/stdmod)
 * Puppet version >= 2.7.x
 * Facter version >= 1.6.2
 
@@ -100,6 +100,19 @@ The module provides also a generic define to manage any memcached configuration 
         class { 'memcached':
           config_dir_source    => 'puppet:///modules/site/memcached/conf/',
           config_dir_recursion => false, # Default: true.
+        }
+
+* Provide an hash of files resources to be created with memcached::conf.
+
+        class { 'memcached':
+          conf_hash => {
+            'memcached.conf' => {
+              template => 'site/memcached/memcached.conf',
+            },
+            'memcached.other.conf' => {
+              template => 'site/memcached/memcached.other.conf',
+            },
+          },
         }
 
 * Do not trigger a service restart when a config file changes.
